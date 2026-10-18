@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+# [설정] 텔레그램 연동 정보 (별도의 GitHub Secrets 설정 불필요)
+TELEGRAM_BOT_TOKEN = "8810285805:AAEOv0BiJgxjTwGqk18FGpawJyMy1fEdtxI"
+TELEGRAM_CHAT_ID = "922028282"
+
 def calculate_wilder_rsi(series: pd.Series, period: int = 14) -> pd.Series:
     delta = series.diff()
     gain = delta.clip(lower=0.0)
@@ -86,12 +90,6 @@ def run_quant_screen(universe: list) -> dict:
     return best_candidate.to_dict()
 
 def main():
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
-    
-    if not token or not chat_id:
-        raise ValueError("환경 변수 TELEGRAM_BOT_TOKEN 또는 TELEGRAM_CHAT_ID가 설정되지 않았습니다.")
-    
     universe_pool = [
         "AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA", "BRK-B",
         "JPM", "V", "UNH", "PG", "HD", "DIS", "ADBE", "NFLX", "CRM", "INTC",
@@ -116,7 +114,7 @@ def main():
             f"📌 *계량적 상태*: 우수한 기업 기초체력에도 불구하고 단기 수급 이탈로 인해 통계적 평균회귀 압력이 집중된 구간입니다."
         )
         
-    send_telegram_alert(token, chat_id, message)
+    send_telegram_alert(TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, message)
 
 if __name__ == "__main__":
     main()
